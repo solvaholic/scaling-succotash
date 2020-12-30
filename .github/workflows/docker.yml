@@ -1,6 +1,13 @@
 name: Dockerfile
 
+# Use this workflow to:
+# - Manually build and push the Dockerfile
+# - Automatically build and push on certain changes
+
 on:
+  # Run when manually triggered
+  workflow_dispatch:
+
   # Run when one of these files change
   push:
     paths:
@@ -8,15 +15,11 @@ on:
       - entrypoint.sh
       - .github/workflows/docker.yml
 
-  # Run when manually triggered
-  workflow_dispatch:
-
 env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Prove the image successfully builds.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  # Prove the image successfully builds
   test-build:
     runs-on: ubuntu-latest
 
@@ -25,21 +28,6 @@ jobs:
 
       - name: Build image
         run: docker build . --file Dockerfile
-
-  # Push image to GitHub's container registry.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push-image:
-    # Ensure test-build job passes before pushing images.
-    needs: test-build
-
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build image
-        run: docker build . --file Dockerfile --tag image
 
       - name: Login to ghcr.io
         run: |
