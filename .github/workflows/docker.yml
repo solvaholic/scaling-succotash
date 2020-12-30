@@ -27,17 +27,17 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile
+        run: docker build . -t "${{ github.sha }}"
 
       - name: Login to ghcr.io
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | \
+          echo "${{ secrets.PAT }}" | \
           docker login ghcr.io \
           -u ${{ github.actor }} --password-stdin
 
       - name: Push image to ghcr.io
         run: |
-          IMAGE_ID=ghcr.io/${{ github.actor }}/$IMAGE_NAME
+          IMAGE_ID=ghcr.io/${{ github.actor }}/${IMAGE_NAME}
 
           # Build image tag strings to push to GitHub's package registry.
           _push_tags=""
@@ -46,31 +46,29 @@ jobs:
           if [[ "${GITHUB_REF}" == "refs/heads/"* ]]; then
             VERSION=${GITHUB_REF#refs/heads/}
             # If branchname is main, use latest instead.
-            if [ "$VERSION" = "main" ]; then
+            if [ "${VERSION}" = "main" ]; then
               VERSION=latest
             fi
-            _push_tags+=\ $IMAGE_ID:$VERSION
+            _push_tags+=" ${IMAGE_ID}:${VERSION}"
 
-          # If GITHUB_REF looks like a version tag, use the tag name after
-          # the leading v so vX.Y.Z becomes X.Y.Z.
-          # TODO: Can this v be removed? :point_down:
+          # If GITHUB_REF looks like a version tag, use the tag name
+          # after the leading v. So vX.Y.Z becomes X.Y.Z
+          # TODO: Decide when/where/how to push major tag
           elif [[ "${GITHUB_REF}" == "refs/tags/v"* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
-            _push_tags+=\ $IMAGE_ID:$VERSION
-            # If this looks like a semantic version tag, also tag the major.
-            _push_tags+=\ $IMAGE_ID:${VERSION%%.*}
+            _push_tags+=" ${IMAGE_ID}:${VERSION}"
 
-          # If GITHUB_REF didn't match either of those rules, freak out.
+          # If GITHUB_REF didn't match either of those rules, :scream:
           else
             echo "FAIL: Did not recognize GITHUB_REF '${GITHUB_REF}'."
             exit 1
           fi
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo IMAGE_ID=${IMAGE_ID}
+          echo VERSION=${VERSION}
 
           for _this_tag in ${_push_tags}; do
-            echo "INFO: Tagging and pushing ${_this_tag}."
-            docker tag image ${_this_tag}
-            docker push ${_this_tag}
+            echo "INFO: Tagging and pushing '${_this_tag}'."
+            docker tag "${{ github.sha }}" "${_this_tag}"
+            docker push "${_this_tag}"
           done
