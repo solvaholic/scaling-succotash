@@ -1,8 +1,10 @@
-name: Dockerfile
+name: Build and push container
 
 # Use this workflow to:
 # - Manually build and push the Dockerfile
 # - Automatically build and push on certain changes
+
+# TODO: Automate build and push for cutting a release
 
 on:
   # Run when manually triggered
@@ -11,8 +13,10 @@ on:
   # Run when one of these files change
   push:
     paths:
-      - 'Dockerfile*'
+      - Dockerfile
       - entrypoint.sh
+      - requirements.txt
+      - octodns-requirements.txt
       - .github/workflows/docker.yml
 
 env:
