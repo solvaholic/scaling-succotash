@@ -1,35 +1,18 @@
 name: Dockerfile
 
 on:
+  # Run when one of these files change
   push:
-    # Run when one of these files change.
     paths:
       - 'Dockerfile*'
       - entrypoint.sh
       - .github/workflows/docker.yml
 
-    # Publish `main` as Docker `latest` image.
-    branches:
-      - main
-
-    # Publish `vX.Y.Z` tags as releases.
-    tags:
-      - v[12]+.[0-9]+.[0-9]+
-
-  # Run tests for any pull requests.
-  pull_request:
-    paths:
-      - 'Dockerfile*'
-      - entrypoint.sh
-      - .github/workflows/docker.yml
-    branches:
-      - main
-
-  # Run when manually triggered.
+  # Run when manually triggered
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: octodns-sync
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   # Prove the image successfully builds.
@@ -40,14 +23,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
+      - name: Build image
+        run: docker build . --file Dockerfile
 
   # Push image to GitHub's container registry.
   # See also https://docs.docker.com/docker-hub/builds/
@@ -66,7 +43,7 @@ jobs:
 
       - name: Login to ghcr.io
         run: |
-          echo "${{ secrets.PAT }}" | \
+          echo "${{ secrets.GITHUB_TOKEN }}" | \
           docker login ghcr.io \
           -u ${{ github.actor }} --password-stdin
 
