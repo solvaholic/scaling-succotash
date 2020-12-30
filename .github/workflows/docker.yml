@@ -19,8 +19,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Prove the image successfully builds
-  test-build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +36,7 @@ jobs:
 
       - name: Push image to ghcr.io
         run: |
-          IMAGE_ID=ghcr.io/${{ github.actor }}/${IMAGE_NAME}
+          IMAGE_ID=ghcr.io/${IMAGE_NAME}
 
           # Build image tag strings to push to GitHub's package registry.
           _push_tags=""
