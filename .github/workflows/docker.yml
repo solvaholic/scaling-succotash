@@ -37,7 +37,7 @@ jobs:
       fullref: ${{ steps.getshortref.outputs.fullref }}
       shortref: ${{ steps.getshortref.outputs.shortref }}
       tagbuilt: ${{ steps.buildimage.outputs.tagbuilt }}
-      tagpushed: ${{ steps.pullimage.outputs.tagpushed }}
+      tagpushed: ${{ steps.pushimage.outputs.tagpushed }}
 
     steps:
       - uses: actions/checkout@v2
@@ -63,7 +63,7 @@ jobs:
             echo "FAIL: Did not recognize GITHUB_REF '${GITHUB_REF}'."
             exit 1
           fi
-          echo "Set fullref to '${_full_ref}'."
+          echo "Set fullref to '${GITHUB_REF}'."
           echo "Set shortref to '${_short_ref}'."
           echo "::set-output name=fullref::${GITHUB_REF}"
           echo "::set-output name=shortref::${_short_ref}"
