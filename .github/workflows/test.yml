@@ -1,16 +1,12 @@
 name: Test the published Action
 
 # Use this workflow to:
-# - Manually test deployments from branches
 # - Automatically test new/udpated branch deployments
 # - Automatically test new/updated version tags
 
 # TODO: Make this workflow actually do :point_up: those things
 
 on:
-  # Run when manually triggered
-  workflow_dispatch:
-
   # Run after the Dockerfile workflow runs
   workflow_run:
     workflows: ["Build and push container"]
@@ -22,6 +18,7 @@ env:
 
 jobs:
   test-published-action:
+    needs: build-and-push
     runs-on: ubuntu-latest
 
     outputs:

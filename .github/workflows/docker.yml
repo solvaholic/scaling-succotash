@@ -96,7 +96,7 @@ jobs:
         id: pushimage
         run: |
           _image_tag="${{ steps.buildimage.outputs.tagbuilt }}"
-          if docker push -q "${_image_tag}"; then
+          if docker push "${_image_tag}"; then
             echo "Pushed '${_image_tag}' OK."
           else
             echo "FAIL: Failed to push '${_image_tag}'."
