@@ -34,34 +34,78 @@ jobs:
   test-published-action:
     runs-on: ubuntu-latest
 
+    outputs:
+      shortref: ${{ steps.getshortref.outputs.shortref }}
+      tagpulled: ${{ steps.pullimage.outputs.tagpulled }}
+      tagbuilt: ${{ steps.buildimage.outputs.tagbuilt }}
+      actionat: ${{ steps.findaction.outputs.actionat }}
+
     steps:
       - uses: actions/checkout@v2
       
       # Get the short reference name
       - name: Get the short reference name
+        id: getshortref
         run: |
+          _short_ref=
           # If GITHUB_REF is a branch, use the branch name.
           if [[ "${GITHUB_REF}" == "refs/heads/"* ]]; then
             _short_ref=${GITHUB_REF#refs/heads/}
-
             # If _short_ref is main, use latest instead.
             if [ "${_short_ref}" = "main" ]; then
               _short_ref=latest
             fi
-
           # If GITHUB_REF looks like a version, use the tag name
           # after the leading v. So vX.Y.Z becomes X.Y.Z
           elif [[ "${GITHUB_REF}" == "refs/tags/v"* ]]; then
             _short_ref=${GITHUB_REF#refs/tags/v}
-
           # If GITHUB_REF didn't match either of those rules, :scream:
           else
             echo "FAIL: Did not recognize GITHUB_REF '${GITHUB_REF}'."
             exit 1
           fi
+          echo "::set-output name=shortref::${_short_ref}"
 
       # Is the Action available at this reference?
+      - name: Verify Action is available
+        id: findaction
+        run: |
+          _short_ref="${{ steps.getshortref.outputs.shortref }}"
+          _actionat="${IMAGE_NAME}@${_short_ref}"
+          echo "::set-output name=actionat::${_actionat}"
+
       # Is the Docker image publicly available at this reference?
+      - name: Verify Docker image is available
+        id: pullimage
+        run: |
+          _short_ref="${{ steps.getshortref.outputs.shortref }}"
+          _image_tag="ghcr.io/${IMAGE_NAME}:${_short_ref}"
+          if docker pull -q "${_image_tag}"; then
+            echo "Pulled '${_image_tag}' OK."
+          else
+            echo "FAIL: Failed to pull '${_image_tag}'."
+            exit 1
+          fi
+          echo "::set-output name=tagpulled::${_image_tag}"
+
       # Will the Dockerfile build OK locally?
+      - name: Verify Docker image builds locally
+        id: buildimage
+        run: |
+          _image_tag="ghcr.io/${IMAGE_NAME}:${{ github.sha }}"
+          if [ -r ./Dockerfile ]; then
+            echo "Found ./Dockerfile OK."
+          else
+            echo "FAIL: ./Dockerfile not readable."
+            exit 1
+          fi
+          if docker build . -q -t "${_image_tag}"; then
+            echo "Built '${_image_tag}' OK."
+          else
+            echo "FAIL: Failed to build '${_image_tag}'."
+            exit 1
+          fi
+          echo "::set-output name=tagbuilt::${_image_tag}"
+
       # Run the ghcr.io image with sample data
       # Run the locally built image with sample data
