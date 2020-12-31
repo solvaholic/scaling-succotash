@@ -16,7 +16,7 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/solvaholic/scaling-succotash:latest'
+  image: 'docker://ghcr.io/solvaholic/scaling-succotash:${{ github.sha }}'
   args:
     - ${{ inputs.config_path }}
     - ${{ inputs.doit }}
