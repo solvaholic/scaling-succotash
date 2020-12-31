@@ -108,8 +108,8 @@ jobs:
   test-published-action:
     needs: build-and-push
     env:
-      _tag_pushed="${{ jobs.build-and-push.outputs.tagpushed }}"
-      _short_ref="${{ jobs.build-and-push.outputs.shortref }}"
+      _tag_pushed="${{ needs.build-and-push.outputs.tagpushed }}"
+      _short_ref="${{ needs.build-and-push.outputs.shortref }}"
     runs-on: ubuntu-latest
 
     outputs:
