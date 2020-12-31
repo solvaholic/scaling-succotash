@@ -6,6 +6,8 @@ name: Build and push container
 
 # TODO: Automate build and push for cutting a release
 
+# TODO: Decide when/where/how to push major tag
+
 on:
   # Run when manually triggered
   workflow_dispatch:
@@ -60,6 +62,8 @@ jobs:
             echo "FAIL: Did not recognize GITHUB_REF '${GITHUB_REF}'."
             exit 1
           fi
+          echo "Set fullref to '${_full_ref}'."
+          echo "Set shortref to '${_short_ref}'."
           echo "::set-output name=fullref::${GITHUB_REF}"
           echo "::set-output name=shortref::${_short_ref}"
 
