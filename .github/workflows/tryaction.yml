@@ -1,0 +1,16 @@
+name: Try ${{ github.repository }} as an Action
+
+on:
+  # Run when manually triggered
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish DNS config from main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Publish
+        uses: ${{ github.repository }}-sync@main
+        with:
+          config_path: public.yaml
