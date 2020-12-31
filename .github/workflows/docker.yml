@@ -50,10 +50,6 @@ jobs:
           # If GITHUB_REF is a branch, use the branch name.
           if [[ "${GITHUB_REF}" == "refs/heads/"* ]]; then
             _short_ref=${GITHUB_REF#refs/heads/}
-            # If _short_ref is main, use latest instead.
-            if [ "${_short_ref}" = "main" ]; then
-              _short_ref=latest
-            fi
           # If GITHUB_REF looks like a version, use the tag name
           # after the leading v. So vX.Y.Z becomes X.Y.Z
           elif [[ "${GITHUB_REF}" == "refs/tags/v"* ]]; then
@@ -72,6 +68,9 @@ jobs:
         id: buildimage
         run: |
           _short_ref="${{ steps.getshortref.outputs.shortref }}"
+          if [ "${_short_ref}" = "main" ]; then
+            _short_ref=latest
+          fi
           _image_tag="ghcr.io/${IMAGE_NAME}:${_short_ref}"
           if [ -r ./Dockerfile ]; then
             echo "Found ./Dockerfile OK."
@@ -125,7 +124,6 @@ jobs:
         id: findaction
         run: |
           # _short_ref is set in this job's env
-          _short_ref="${{ steps.setshortref.outputs.shortref }}"
           _actionat="${IMAGE_NAME}@${_short_ref}"
           echo "::set-output name=actionat::${_actionat}"
 
