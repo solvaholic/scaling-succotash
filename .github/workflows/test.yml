@@ -3,7 +3,7 @@ name: Test the published Action
 # Use this workflow to:
 # - Manually test deployments from branches
 # - Automatically test new/udpated branch deployments
-# - Automatically test releases
+# - Automatically test new/updated version tags
 
 # TODO: Make this workflow actually do :point_up: those things
 
@@ -15,17 +15,9 @@ on:
 
   # Run after the Dockerfile workflow runs
   workflow_run:
-    workflows: ["Dockerfile"]
+    workflows: ["Build and push container"]
     types: 
       - completed
-
-  release:
-    types:
-      - published 
-      - created 
-      - edited 
-      - prereleased
-      - released
 
 env:
   IMAGE_NAME: ${{ github.repository }}
@@ -65,6 +57,8 @@ jobs:
             exit 1
           fi
           echo "::set-output name=shortref::${_short_ref}"
+
+      # TODO: Make this step :point_down: actually work
 
       # Is the Action available at this reference?
       - name: Verify Action is available
@@ -106,6 +100,8 @@ jobs:
             exit 1
           fi
           echo "::set-output name=tagbuilt::${_image_tag}"
+
+      # TODO: Make these steps :point_down: actually work
 
       # Run the ghcr.io image with sample data
       # Run the locally built image with sample data

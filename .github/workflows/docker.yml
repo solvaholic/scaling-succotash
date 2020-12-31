@@ -19,6 +19,10 @@ on:
       - octodns-requirements.txt
       - .github/workflows/docker.yml
 
+  # Run after version tag is pushed
+    tags:
+      - v[12]+.[0-9]+.[0-9]+
+
 env:
   IMAGE_NAME: ${{ github.repository }}
 
