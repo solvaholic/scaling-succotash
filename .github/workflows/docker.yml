@@ -108,8 +108,8 @@ jobs:
   test-published-action:
     needs: build-and-push
     env:
-      TAGPUSHED: "${{ needs.build-and-push.outputs.tagpushed }}"
-      SHORTREF: "${{ needs.build-and-push.outputs.shortref }}"
+      _tag_pushed: "${{ needs.build-and-push.outputs.tagpushed }}"
+      _short_ref: "${{ needs.build-and-push.outputs.shortref }}"
     runs-on: ubuntu-latest
 
     outputs:
@@ -124,24 +124,24 @@ jobs:
       - name: Verify Action is available
         id: findaction
         run: |
-          # SHORTREF is set in this job's env
-          SHORTREF="${{ steps.setshortref.outputs.shortref }}"
-          _actionat="${IMAGE_NAME}@${SHORTREF}"
+          # _short_ref is set in this job's env
+          _short_ref="${{ steps.setshortref.outputs.shortref }}"
+          _actionat="${IMAGE_NAME}@${_short_ref}"
           echo "::set-output name=actionat::${_actionat}"
 
       # Is the Docker image publicly available at this reference?
       - name: Verify Docker image is available
         id: pullimage
         run: |
-          # TAGPUSHED is set in this job's env
-          docker logout "${TAGPUSHED%%/*}"
-          if docker pull -q "${TAGPUSHED}"; then
-            echo "Pulled '${TAGPUSHED}' OK."
+          # _tag_pushed is set in this job's env
+          docker logout "${_tag_pushed%%/*}"
+          if docker pull -q "${_tag_pushed}"; then
+            echo "Pulled '${_tag_pushed}' OK."
           else
-            echo "FAIL: Failed to pull '${TAGPUSHED}'."
+            echo "FAIL: Failed to pull '${_tag_pushed}'."
             exit 1
           fi
-          echo "::set-output name=tagpulled::${TAGPUSHED}"
+          echo "::set-output name=tagpulled::${_tag_pushed}"
 
       # TODO: Make these steps :point_down: actually work
       # Run the ghcr.io image with sample data
