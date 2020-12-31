@@ -92,6 +92,7 @@ jobs:
             exit 1
           fi
 
+          echo "Set tagbuilt to '${_image_tag}'."
           echo "::set-output name=tagbuilt::${_image_tag}"
 
       - name: Login to ghcr.io
@@ -110,6 +111,7 @@ jobs:
             echo "FAIL: Failed to push '${_image_tag}'."
             exit 1
           fi
+          echo "Set tagpushed to '${_image_tag}'."
           echo "::set-output name=tagpushed::${_image_tag}"
 
   test-published-action:
@@ -133,6 +135,7 @@ jobs:
         run: |
           # _short_ref is set in this job's env
           _actionat="${IMAGE_NAME}@${_short_ref}"
+          echo "Set actionat to '${_actionat}'."
           echo "::set-output name=actionat::${_actionat}"
 
       # Is the Docker image publicly available at this reference?
@@ -147,6 +150,7 @@ jobs:
             echo "FAIL: Failed to pull '${_tag_pushed}'."
             exit 1
           fi
+          echo "Set tagpulled to '${_tag_pushed}'."
           echo "::set-output name=tagpulled::${_tag_pushed}"
 
       # TODO: Make these steps :point_down: actually work
