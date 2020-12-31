@@ -1,4 +1,4 @@
-name: Try ${{ github.repository }} as an Action
+name: Try this repository as an Action
 
 on:
   # Run when manually triggered
@@ -11,6 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Publish
-        uses: ${{ github.repository }}-sync@main
+        uses: solvaholic/scaling-succotash@main
         with:
           config_path: public.yaml
