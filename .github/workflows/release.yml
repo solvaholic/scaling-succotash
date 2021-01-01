@@ -76,6 +76,7 @@ jobs:
       - name: Commit and push changes
         id: pushbranch
         run: |
+          _ver="${{ github.event.inputs.version }}"
           _relbranch="${{ steps.relbranch.outputs.relbranch }}"
           git config user.name "${GIT_AUTHOR_NAME}"
           git config user.email "${GIT_AUTHOR_EMAIL}"
@@ -90,3 +91,15 @@ jobs:
           fi
 
       # Create the draft release
+      # https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#get-a-release
+      # https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#create-a-release
+      # https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#get-the-latest-release
+
+      - name: Create the draft release
+        id: mkrel
+        run: |
+          _ver="${{ github.event.inputs.version }}"
+          _tag="v${_ver}"
+          _relbranch="${{ steps.relbranch.outputs.relbranch }}"
+          # gh api /make/some/:magic
+          gh api /repos/:owner/:repo/releases
