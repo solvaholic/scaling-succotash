@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Publish
-        uses: solvaholic/scaling-succotash:main
-        # TODO: Why? :point_up? Why : not @ ?
+        uses: 'solvaholic/scaling-succotash@main'
         with:
           config_path: public.yaml
