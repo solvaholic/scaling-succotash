@@ -29,7 +29,7 @@ jobs:
         run: |
           _ver="${{ github.event.inputs.version }}"
           _changelog=
-          if grep -q "^## [${_ver}]" docs/CHANGELOG.md; then
+          if grep -Fq "## [${_ver}]" docs/CHANGELOG.md; then
             echo "Found '## [${_ver}]' in CHANGELOG.md :+1:"
           else
             echo "FAIL: Did not find '## [${_ver}]' in CHANGELOG.md"
