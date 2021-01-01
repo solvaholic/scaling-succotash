@@ -1,6 +1,6 @@
 # action.yml
 # https://help.github.com/en/actions/building-actions/metadata-syntax-for-github-actions
-name: 'scaling-succotash'
+name: 'octodns-sync'
 description: 'Run github/octodns to deploy your DNS config to any cloud.'
 inputs:
   config_path:
@@ -13,25 +13,14 @@ inputs:
                   not do it.'
     required: false
     default: ''
-outputs:
-  imagetag: 
-    description: "Tag for the Docker image to use"
-    value: ${{ steps.getimagetag.outputs.imagetag }}
+
 runs:
-  using: "composite"
-  steps: 
-    - id: getimagetag
-      run: |
-        _tag=ghcr.io/${{ github.repository }}:${{ github.sha }}
-        echo "::set-output name=imagetag::${_tag}"
-      shell: bash
-    - id: runcommand
-      run: |
-        _tag=${{ steps.getimagetag.outputs.imagetag }}
-        _config="${INPUT_CONFIG_PATH}"
-        _doit="${INPUT_DOIT}"
-        docker run --rm "${_tag}" "${_config}" "${_doit}"
-      shell: bash
+  using: 'docker'
+  image: 'docker://ghcr.io/solvaholic/octodns-sync:latest'
+  args:
+    - ${{ inputs.config_path }}
+    - ${{ inputs.doit }}
+
 branding:
   icon: 'list'
   color: 'purple'
