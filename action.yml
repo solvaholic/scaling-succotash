@@ -1,21 +1,35 @@
-name: 'Hello World'
-description: 'Greet someone'
+# action.yml
+# https://help.github.com/en/actions/building-actions/metadata-syntax-for-github-actions
+name: 'scaling-succotash'
+description: 'Run github/octodns to deploy your DNS config to any cloud.'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  config_path:
+    description: 'Path, relative to your repository root, of the config file
+                  you would like octodns to use.'
     required: true
-    default: 'World'
+    default: 'public.yaml'
+  doit:
+    description: 'Really do it? Set "--doit" to do it; Any other string to
+                  not do it.'
+    required: false
+    default: ''
 outputs:
-  random-number: 
+  imagetag: 
     description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-id }}
+    value: ${{ steps.getimagetag.outputs.imagetag }}
 runs:
   using: "composite"
   steps: 
-    - run: echo Hello ${{ inputs.who-to-greet }}.
+    - id: getimagetag
+      run: |
+        _tag=ghcr.io/${{ github.repository }}:${{ github.sha }}
+        echo "::set-output name=imagetag::${_tag}"
       shell: bash
-    - id: random-number-generator
-      run: echo "::set-output name=random-id::$(echo $RANDOM)"
+    - id: runcommand
+      run: |
+        _tag=${{ steps.getimagetag.outputs.imagetag }}
+        docker run -it --rm --entrypoint /bin/bash ${_tag} -c id
       shell: bash
-    - run: ${{ github.action_path }}/goodbye.sh
-      shell: bash
+branding:
+  icon: 'list'
+  color: 'purple'
