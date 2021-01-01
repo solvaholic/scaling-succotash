@@ -15,7 +15,7 @@ inputs:
     default: ''
 outputs:
   imagetag: 
-    description: "Random number"
+    description: "Tag for the Docker image to use"
     value: ${{ steps.getimagetag.outputs.imagetag }}
 runs:
   using: "composite"
@@ -28,7 +28,9 @@ runs:
     - id: runcommand
       run: |
         _tag=${{ steps.getimagetag.outputs.imagetag }}
-        docker run --rm --entrypoint /bin/bash ${_tag} -c id
+        _config="${INPUT_CONFIG_PATH}"
+        _doit="${INPUT_DOIT}"
+        docker run --rm "${_tag}" "${_config}" "${_doit}"
       shell: bash
 branding:
   icon: 'list'

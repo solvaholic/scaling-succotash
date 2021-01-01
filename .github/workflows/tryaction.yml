@@ -12,4 +12,4 @@ jobs:
       - id: run-the-action
         uses: solvaholic/scaling-succotash@main
         with:
-          config_path: public.yaml
+          config_path: sample.yaml
