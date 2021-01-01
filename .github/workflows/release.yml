@@ -12,6 +12,10 @@ on:
         description: 'Release version to create, for example 1.2.3'
         required: true
 
+env:
+  GIT_AUTHOR_NAME: ${{ github.repository_owner }}
+  GIT_AUTHOR_EMAIL: ${{ github.repository_owner }}@users.noreply.github.com
+
 jobs:
   create-release:
     runs-on: ubuntu-latest
@@ -35,9 +39,8 @@ jobs:
             echo "FAIL: Did not find '## [${_ver}]' in CHANGELOG.md"
             exit 1
           fi
-          # TODO: Make this :point_down: more readable
-          _changelog="$(sed -n '/^## \[${_ver}\]/,/^## /p' \
-          docs/CHANGELOG.md | sed '$d')"
+          # TODO: Make this :point_down: actually work
+          _changelog=":shrug:"
           echo "Set changelog to '${_changelog}'."
           echo "::set-output name=changelog::${_changelog}"
 
@@ -63,8 +66,27 @@ jobs:
           _ver="${{ github.event.inputs.version }}"
           if sed -i "s/:latest'/:${_ver}'/" action.yml; then
             echo "Set OK :+1:"
-            grep "${_ver}" action.yml
+            grep "image:" action.yml || echo wut
           else
             echo "FAIL: That did not work."
             exit 1
           fi
+
+      # Commit and push changes
+      - name: Commit and push changes
+        id: pushbranch
+        run: |
+          _relbranch="${{ steps.relbranch.outputs.relbranch }}"
+          git config user.name "${GIT_AUTHOR_NAME}"
+          git config user.email "${GIT_AUTHOR_EMAIL}"
+          git add action.yml
+          git commit \
+            -m "Bump action.yml for release v${_ver}."
+          if git push -u origin "${_relbranch}"; then
+            echo "Pushed '${_relbranch}' OK :+1:"
+          else
+            echo "FAIL: That did not work."
+            exit 1
+          fi
+
+      # Create the draft release
