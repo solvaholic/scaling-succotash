@@ -13,4 +13,4 @@ jobs:
       - name: Publish
         uses: 'solvaholic/scaling-succotash@main'
         with:
-          who-to-greet: public.yaml
+          config_path: public.yaml
