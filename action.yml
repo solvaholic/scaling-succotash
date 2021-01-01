@@ -28,7 +28,7 @@ runs:
     - id: runcommand
       run: |
         _tag=${{ steps.getimagetag.outputs.imagetag }}
-        docker run -it --rm --entrypoint /bin/bash ${_tag} -c id
+        docker run --rm --entrypoint /bin/bash ${_tag} -c id
       shell: bash
 branding:
   icon: 'list'

@@ -5,12 +5,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish:
-    name: Publish DNS config from main
+  tryaction:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Publish
-        uses: 'solvaholic/scaling-succotash@main'
+      - id: run-the-action
+        uses: ${{ github.repository }}@main
         with:
           config_path: public.yaml
