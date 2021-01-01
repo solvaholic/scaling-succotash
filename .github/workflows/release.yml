@@ -102,4 +102,5 @@ jobs:
           _tag="v${_ver}"
           _relbranch="${{ steps.relbranch.outputs.relbranch }}"
           # gh api /make/some/:magic
-          gh api /repos/:owner/:repo/releases
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            gh api /repos/:owner/:repo/releases
