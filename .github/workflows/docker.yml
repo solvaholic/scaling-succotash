@@ -105,14 +105,16 @@ jobs:
           _tags="${_built_tag}"
           _image_ver="${{ steps.gettagver.outputs.shortref }}"
           _full_ref="${{ steps.gettagver.outputs.fullref }}"
+          _tag_pushed=
 
           if [ "${_image_ver}" = "main" ]; then
             _image_ver=latest
-            _tags="${_tags} ${_built_tag%:*}:${_image_ver}"
           elif [[ "${_full_ref}" == "refs/tags/v"* ]]; then
             _image_ver=${_full_ref#refs/tags/v}
-            _tags="${_tags} ${_built_tag%:*}:${_image_ver}"
           fi
+
+          _tag_pushed="${_built_tag%:*}:${_image_ver}"
+          _tags="${_tags} ${_tag_pushed}"
 
           for _tag in ${_tags}; do
             if docker tag "${_built_tag}" "${_tag}"; then
@@ -129,10 +131,10 @@ jobs:
             fi
           done
 
-          echo "Set tagpushed to '${_built_tag}'."
-          echo "::set-output name=tagpushed::${_built_tag}"
+          echo "Set tagpushed to '${_tag_pushed}'."
+          echo "::set-output name=tagpushed::${_tag_pushed}"
 
-  test-published-action:
+  test-published-container:
     needs: build-and-push
     env:
       _tag_pushed: "${{ needs.build-and-push.outputs.tagpushed }}"
@@ -147,6 +149,7 @@ jobs:
       - uses: actions/checkout@v2
 
       # TODO: Make this step :point_down: actually work
+      #       Ooh! Could this test ONLY run when ver tag pushed?
       # Is the Action available at this reference?
       - name: Verify Action is available
         id: findaction
