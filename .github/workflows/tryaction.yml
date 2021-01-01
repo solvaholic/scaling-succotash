@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: run-the-action
-        uses: ${{ github.repository }}@main
+        uses: solvaholic/scaling-succotash@main
         with:
           config_path: public.yaml
