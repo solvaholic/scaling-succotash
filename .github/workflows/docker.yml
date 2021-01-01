@@ -115,6 +115,12 @@ jobs:
           fi
 
           for _tag in ${_tags}; do
+            if docker tag "${_built_tag}" "${_tag}"; then
+              echo "Tagged '${_tag}' OK."
+            else
+              echo "FAIL: Failed to tag '${_tag}'."
+              exit 1
+            fi
             if docker push "${_tag}"; then
               echo "Pushed '${_tag}' OK."
             else
