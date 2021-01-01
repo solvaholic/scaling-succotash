@@ -1,26 +1,21 @@
-# action.yml
-# https://help.github.com/en/actions/building-actions/metadata-syntax-for-github-actions
-name: 'scaling-succotash'
-description: 'Run github/octodns to deploy your DNS config to any cloud.'
+name: 'Hello World'
+description: 'Greet someone'
 inputs:
-  config_path:
-    description: 'Path, relative to your repository root, of the config file
-                  you would like octodns to use.'
+  who-to-greet:  # id of input
+    description: 'Who to greet'
     required: true
-    default: 'public.yaml'
-  doit:
-    description: 'Really do it? Set "--doit" to do it; Any other string to
-                  not do it.'
-    required: false
-    default: ''
-
+    default: 'World'
+outputs:
+  random-number: 
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-id }}
 runs:
-  using: 'docker'
-  image: 'docker://ghcr.io/solvaholic/scaling-succotash:@main'
-  args:
-    - ${{ inputs.config_path }}
-    - ${{ inputs.doit }}
-
-branding:
-  icon: 'list'
-  color: 'purple'
+  using: "composite"
+  steps: 
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: random-number-generator
+      run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
+    - run: ${{ github.action_path }}/goodbye.sh
+      shell: bash
