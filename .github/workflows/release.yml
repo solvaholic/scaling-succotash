@@ -109,17 +109,7 @@ jobs:
                     \"body\": \"words words words\",
                     \"draft\": true }"
           echo "${_data}"
-          _count="$(GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-                    gh api /repos/:owner/:repo/releases | \
-                    jq -r ".[].tag_name" | \
-                    grep -c "${_tag}")"
-          echo "${_count}"
-          if [ "${_count}" = "0" ]; then
-            # Create the draft release
-            echo "${_data}" | \
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-            gh api -i -X POST /repos/:owner/:repo/releases --input -
-          else
-            echo "FAIL: There's already a release for tag '${_tag}'"
-            exit 1
-          fi
+          # Create the draft release
+          echo "${_data}" | \
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+          gh api -i -X POST /repos/:owner/:repo/releases --input -
