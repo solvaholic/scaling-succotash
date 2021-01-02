@@ -111,5 +111,5 @@ jobs:
           echo "${_data}"
           # Create the draft release
           echo "${_data}" | \
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-          gh api -i -X POST /repos/:owner/:repo/releases --input -
+          GITHUB_TOKEN=${{ secrets.PAT }} \
+          gh api -X POST /repos/:owner/:repo/releases --input -
