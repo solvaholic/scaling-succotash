@@ -100,7 +100,23 @@ jobs:
         run: |
           _ver="${{ github.event.inputs.version }}"
           _tag="v${_ver}"
+          _repo="${{ github.repository }}"
           _relbranch="${{ steps.relbranch.outputs.relbranch }}"
-          # gh api /make/some/:magic
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
-            gh api /repos/:owner/:repo/releases
+          _data="{  \"tag_name\": \"${_tag}\",
+                    \"target_commitish\": \"${_relbranch}\",
+                    \"name\": \"${_repo#*/} ${_tag}\",
+                    \"body\": \"words words words\",
+                    \"draft\": true }"
+          _count="$(GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+                    gh api /repos/:owner/:repo/releases | \
+                    jq -r ".[].tag_name" | \
+                    grep -c "${_tag}")"
+          if [ "${_count}" = "0" ]; then
+            # Create the draft release
+            echo "${_data}" | \
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            gh api -X POST /repos/:owner/:repo/releases --input -
+          else
+            echo "FAIL: There's already a release for tag '${_tag}'"
+            exit 1
+          fi
