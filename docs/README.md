@@ -26,4 +26,4 @@ Periodically checks for changes in **[solvaholic/template](https://github.com/so
 
 View or modify this workflow's configuration in `.github/workflows/sync-from-template.yml`.
 
-makin some changes
+makin some additional changes
