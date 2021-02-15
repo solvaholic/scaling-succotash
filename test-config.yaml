@@ -1,0 +1,15 @@
+---
+providers:
+  config:
+    class: octodns.provider.yaml.YamlProvider
+    directory: .
+  hosts:
+    class: octodns.provider.etc_hosts.EtcHostsProvider
+    directory: .
+
+zones:
+  scaling-succotash.:
+    sources:
+      - config
+    targets:
+      - hosts

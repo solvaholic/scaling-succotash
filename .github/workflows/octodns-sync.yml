@@ -1,0 +1,27 @@
+name: Run octodns-sync to test config
+
+# Use this workflow to:
+# - Manually test octodns config
+# - Automatically test octodns config
+
+on:
+  # Run when manually triggered
+  workflow_dispatch:
+
+  # Run on pull request open, reopen, and synchronize
+  pull_request:
+     branches: [main]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.route53_aws_key_id }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.route53_aws_secret_access_key }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test DNS config
+        uses: solvaholic/octodns-sync@latest
+        with:
+          config_path: test-config.yaml
