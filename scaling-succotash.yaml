@@ -8,6 +8,9 @@ localhost:
 server:
   type: A
   value: 10.0.0.1
+telnet:
+  type: A
+  value: 10.0.0.3
 www:
   type: CNAME
   value: server.scaling-succotash.
