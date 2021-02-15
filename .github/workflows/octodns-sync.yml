@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Test DNS config
-        uses: solvaholic/octodns-sync@latest
+      - name: Test changes to DNS config
+        uses: solvaholic/octodns-sync@main
         with:
           config_path: test-config.yaml
+          add_pr_comment: 'Yes'
+          pr_comment_token: ${{ github.token }}
