@@ -4,7 +4,7 @@ git:
   value: server.scaling-succotash.
 igloo:
   type: A
-  value: 10.0.0.4
+  value: 10.0.0.5
 localhost:
   type: A
   value: 127.0.0.1
