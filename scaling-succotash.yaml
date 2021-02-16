@@ -5,6 +5,9 @@ git:
 localhost:
   type: A
   value: 127.0.0.1
+noticeme:
+  type: A
+  value: 10.0.0.8
 server:
   type: A
   value: 10.0.0.1
