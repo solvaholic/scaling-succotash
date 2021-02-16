@@ -1,5 +1,8 @@
 on:
   pull_request_target:
+defaults:
+  run:
+    shell: bash
 jobs:
   test-and-comment:
     runs-on: ubuntu-20.04
@@ -13,8 +16,10 @@ jobs:
           _sha="$(echo "${{ github.event.pull_request.head.sha }}" | cut -c 1-7)"
           # Fetch PR head commit
           git fetch origin refs/pull/${{ github.event.pull_request.number }}/head
-          # Checkout *.yaml from PR head commit
-          git checkout "$_sha" -- *.yaml
+          # List changed config files in PR head
+          _files="$(git diff --name-only HEAD $_sha | grep "\.yaml$")"
+          # Checkout config files from PR head commit
+          if [ -n "$_files" ]; then git checkout "$_sha" -- $_files; fi
           # Set output 'sha' to $_sha
           echo "::set-output name=sha::${_sha}"
       - name: Test changes to DNS config
