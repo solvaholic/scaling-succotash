@@ -1,0 +1,13 @@
+---
+git:
+  type: CNAME
+  value: server.testing123.
+localhost:
+  type: A
+  value: 127.0.0.1
+server:
+  type: A
+  value: 10.1.0.1
+www:
+  type: CNAME
+  value: server.testing123.
