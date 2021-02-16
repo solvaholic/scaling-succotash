@@ -18,3 +18,8 @@ zones:
       - config
     targets:
       - hosts
+  testing123.:
+    sources:
+      - config
+    targets:
+      - hosts
