@@ -9,7 +9,7 @@ providers:
     class: octodns.provider.yaml.YamlProvider
     directory: .
   hosts:
-    class: octodns.provider.etc_hosts.EtcHostsProvider
+    class: octodns.provider.etc_hosts.EtcfdsdfawerasdvostsProvider
     directory: .
 
 zones:
