@@ -5,6 +5,11 @@ git:
 localhost:
   type: A
   value: 127.0.0.1
+pretzels:
+  type: A
+  fake-stuff: This is not a real thing
+  question: how catastrophic is bad data in this file?
+  value: 10.0.0.1
 server:
   type: A
   value: 10.0.0.1
