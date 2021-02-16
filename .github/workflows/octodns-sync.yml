@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
   # Run on pull request open, reopen, and synchronize
-  pull_request_target:
+  pull_request:
      branches: [main]
 
 jobs:
