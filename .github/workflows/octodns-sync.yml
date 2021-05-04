@@ -19,26 +19,13 @@ jobs:
       # this workflow run
       - uses: actions/checkout@v2
 
-      # Install octodns and all its dependencies
-      - name: Install octodns and its dependencies
-        id: runner-install
-        run: |
-          _ver="${{ github.event.inputs.version }}"
-          time if [[ "$_ver" = v* ]]; then
-            # Assume input 'version' is an available release
-            curl -O "https://raw.githubusercontent.com/octodns/octodns/$_ver/requirements.txt"
-            pip install "octodns==${_ver#v}" -r requirements.txt
-          else
-            # Assume input 'version' is a Git ref in octodns/octodns
-            git clone --single-branch --branch "$_ver" --no-tags \
-            https://github.com/octodns/octodns.git ./octodns-src
-            pip install ./octodns-sync -r ./octodns-src/requirements.txt
-          fi
-
       # Run octodns to test current config
       - name: Test current configuration
-        id: runner-test
-        run: exit 0
-
-
-
+        id: octodns-test
+        uses: solvaholic/octodns-sync@issue50
+        with:
+          config_path: public.yaml
+          doit: 'no'
+          add_pr_comment: 'no'
+          octodns_ref: ${{ github.event.inputs.version }}
+          pr_comment_token: 'not set'
