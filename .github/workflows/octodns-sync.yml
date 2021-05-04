@@ -24,7 +24,7 @@ jobs:
         id: octodns-test
         uses: solvaholic/octodns-sync@issue50
         with:
-          config_path: public.yaml
+          config_path: test-config.yaml
           doit: 'no'
           add_pr_comment: 'no'
           octodns_ref: ${{ github.event.inputs.version }}
