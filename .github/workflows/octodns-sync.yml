@@ -29,3 +29,7 @@ jobs:
           add_pr_comment: 'no'
           octodns_ref: ${{ github.event.inputs.version }}
           pr_comment_token: 'not set'
+
+      # Check that :point_up: output
+      - name: Check octodns-sync output
+        run: cat $GITHUB_WORKSPACE/octodns-sync.plan
