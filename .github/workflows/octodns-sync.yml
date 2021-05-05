@@ -5,6 +5,7 @@ on:
       # User inputs the octodns release to use, for example `v0.9.12`
       version:
         description: 'octodns release to use, for example v0.9.12'
+        default: 'v0.9.12'
         required: true
 
 defaults:
@@ -28,7 +29,7 @@ jobs:
           doit: 'no'
           add_pr_comment: 'Yes'
           octodns_ref: ${{ github.event.inputs.version }}
-          pr_comment_token: {{ secrets.PAT }}
+          pr_comment_token: ${{ secrets.PAT }}
 
       # Check that :point_up: output
       - name: Check octodns-sync output
