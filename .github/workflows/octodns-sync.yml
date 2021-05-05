@@ -26,9 +26,9 @@ jobs:
         with:
           config_path: test-config.yaml
           doit: 'no'
-          add_pr_comment: 'no'
+          add_pr_comment: 'Yes'
           octodns_ref: ${{ github.event.inputs.version }}
-          pr_comment_token: 'not set'
+          pr_comment_token: {{ secrets.PAT }}
 
       # Check that :point_up: output
       - name: Check octodns-sync output
