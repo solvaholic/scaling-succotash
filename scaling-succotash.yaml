@@ -1,7 +1,4 @@
 ---
-git:
-  type: CNAME
-  value: server.scaling-succotash.
 localhost:
   type: A
   value: 127.0.0.1
