@@ -1,4 +1,7 @@
 ---
+house:
+  type: A
+  value: 192.168.0.1
 localhost:
   type: A
   value: 127.0.0.1
