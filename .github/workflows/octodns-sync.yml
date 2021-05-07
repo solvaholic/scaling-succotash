@@ -18,7 +18,19 @@ defaults:
 jobs:
   on-runner:
     runs-on: ubuntu-20.04
+    outputs:
+      ref: ${{ steps.pick-ref.outputs.ref }}
     steps:
+      # Pick a value for octodns_ref
+      # Use input if workflow_dispatch, else default to v0.9.12
+      - id: pick-ref
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            _ref="${{ github.event.inputs.version }}"
+          else
+            _ref='v0.9.12'
+          fi
+          echo "::set-output name=ref::${_ref}"
       # Check out this repository at the same ref that triggered
       # this workflow run
       - uses: actions/checkout@v2
@@ -31,7 +43,7 @@ jobs:
           config_path: test-config.yaml
           doit: 'no'
           add_pr_comment: 'Yes'
-          octodns_ref: ${{ github.event.inputs.version }}
+          octodns_ref: ${{ steps.pick-ref.outputs.ref }}
           pr_comment_token: ${{ secrets.PAT }}
 
       # Check that :point_up: output
