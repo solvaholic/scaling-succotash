@@ -41,7 +41,7 @@ jobs:
         id: octodns-test
         env:
           SYNC_REF: ${{ github.event.inputs.sync_ref }}
-        uses: solvaholic/octodns-sync@${{ env.SYNC_REF }}
+        uses: solvaholic/octodns-sync@v2
         with:
           config_path: test-config.yaml
           doit: 'no'
