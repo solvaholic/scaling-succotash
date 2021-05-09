@@ -2,14 +2,16 @@ on:
   # Run when manually triggered
   workflow_dispatch:
     inputs:
-      # User inputs the octodns release to use, for example `v0.9.12`
-      version:
-        description: 'octodns release to use, for example v0.9.12'
+      # User inputs the octodns/octodns ref to use, for example `v0.9.12`
+      octodns_ref:
+        description: 'octodns/octodns ref to use, for example v0.9.12'
         default: 'v0.9.12'
         required: true
-  # Run on pull request open, reopen, and synchronize
-  pull_request:
-     branches: [main]
+      # User inputs the solvaholic/octodns-sync ref to use, for example `main`
+      sync_ref:
+        description: 'solvaholic/octodns-sync ref to use, for example main'
+        default: 'main'
+        required: true
 
 defaults:
   run:
@@ -26,7 +28,7 @@ jobs:
       - id: pick-ref
         run: |
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            _ref="${{ github.event.inputs.version }}"
+            _ref="${{ github.event.inputs.octodns_ref }}"
           else
             _ref="v0.9.12"
           fi
@@ -37,7 +39,7 @@ jobs:
       # Run octodns to test current config
       - name: Test current configuration
         id: octodns-test
-        uses: solvaholic/octodns-sync@issue50
+        uses: solvaholic/octodns-sync@${{ github.event.inputs.octodns_ref }}
         with:
           config_path: test-config.yaml
           doit: 'no'
@@ -46,5 +48,5 @@ jobs:
           pr_comment_token: ${{ secrets.PAT }}
 
       # Check that :point_up: output
-      - name: Check octodns-sync output
+      - name: Check octodns-sync plan output
         run: cat $GITHUB_WORKSPACE/octodns-sync.plan
