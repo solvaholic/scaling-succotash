@@ -39,12 +39,14 @@ jobs:
       # Run octodns to test current config
       - name: Test current configuration
         id: octodns-test
+        env:
+          SYNC_REF: ${{ steps.pick-ref.outputs.octodns_ref }}
         uses: solvaholic/octodns-sync@${{ github.event.inputs.octodns_ref }}
         with:
           config_path: test-config.yaml
           doit: 'no'
           add_pr_comment: 'Yes'
-          octodns_ref: ${{ steps.pick-ref.outputs.octodns_ref }}
+          octodns_ref: ${{ env.SYNC_REF }}
           pr_comment_token: ${{ secrets.PAT }}
 
       # Check that :point_up: output
