@@ -8,11 +8,13 @@ on:
 
 jobs:
   publish:
-    name: Test DNS config (${{ github.event_name }}.${{ github.event.action }})
+    name: Test DNS config (${{ github.event.action }})
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout ${{ github.repository }} at ${{ github.ref }} / ${{ github.sha }}
+      - name: Checkout refs/pull/${{ github.event.number }}/head
         uses: actions/checkout@v2
+        with:
+          ref: refs/pull/${{ github.event.number }}/head
       - name: Run octodns-sync
         uses: solvaholic/octodns-sync@issue51
         with:
