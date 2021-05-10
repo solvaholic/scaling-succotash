@@ -1,54 +1,20 @@
-on:
-  # Run when manually triggered
-  workflow_dispatch:
-    inputs:
-      # User inputs the octodns/octodns ref to use, for example `v0.9.12`
-      octodns_ref:
-        description: 'octodns/octodns ref to use, for example v0.9.12'
-        default: 'v0.9.12'
-        required: true
-      # User inputs the solvaholic/octodns-sync ref to use, for example `main`
-      sync_ref:
-        description: 'solvaholic/octodns-sync ref to use, for example main'
-        default: 'main'
-        required: true
+name: octodns-sync
 
-defaults:
-  run:
-    shell: bash
+on:
+  # Test config on default pull_request activity types
+  # (Remember type is called action, in the event payload)
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
-  on-runner:
+  publish:
+    name: Test DNS config (${{ github.event_name }}.${{ github.event.action }})
     runs-on: ubuntu-20.04
-    outputs:
-      ref: ${{ steps.pick-ref.outputs.octodns_ref }}
     steps:
-      # Pick a value for octodns_ref
-      # Use input if workflow_dispatch, else default to v0.9.12
-      - id: pick-ref
-        run: |
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-            _ref="${{ github.event.inputs.octodns_ref }}"
-          else
-            _ref="v0.9.12"
-          fi
-          echo "::set-output name=octodns_ref::${_ref}"
-      # Check out this repository at the same ref that triggered
-      # this workflow run
       - uses: actions/checkout@v2
-      # Run octodns to test current config
-      - name: Test current configuration
-        id: octodns-test
-        env:
-          SYNC_REF: ${{ github.event.inputs.sync_ref }}
-        uses: solvaholic/octodns-sync@v2
+      - name: Publish
+        uses: solvaholic/octodns-sync@issue51
         with:
           config_path: test-config.yaml
-          doit: 'no'
           add_pr_comment: 'Yes'
-          octodns_ref: ${{ steps.pick-ref.outputs.octodns_ref }}
-          pr_comment_token: ${{ secrets.PAT }}
-
-      # Check that :point_up: output
-      - name: Check octodns-sync plan output
-        run: cat $GITHUB_WORKSPACE/octodns-sync.plan
+          pr_comment_token: '${{ github.token }}'
