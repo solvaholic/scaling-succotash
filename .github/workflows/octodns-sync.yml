@@ -11,8 +11,9 @@ jobs:
     name: Test DNS config (${{ github.event_name }}.${{ github.event.action }})
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - name: Publish
+      - name: Checkout ${{ github.repository }} at ${{ github.ref }} / ${{ github.sha }}
+        uses: actions/checkout@v2
+      - name: Run octodns-sync
         uses: solvaholic/octodns-sync@issue51
         with:
           config_path: test-config.yaml
