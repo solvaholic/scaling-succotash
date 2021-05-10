@@ -4,7 +4,7 @@ localhost:
   value: 127.0.0.1
 octodns-sync:
   type: A
-  value: 192.168.0.51
+  value: 192.168.99.51
 server:
   type: A
   value: 10.0.0.1
