@@ -5,19 +5,25 @@ on:
   # (Remember type is called action, in the event payload)
   pull_request:
     types: [opened, synchronize, reopened]
+  # Also run when manually triggered
+  workflow_dispatch:
 
 jobs:
   publish:
     name: Test DNS config (${{ github.event.action }})
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout refs/pull/${{ github.event.number }}/head
+      - name: Checkout ${{ github.event.ref }}
         uses: actions/checkout@v2
-        with:
-          ref: refs/pull/${{ github.event.number }}/head
       - name: Run octodns-sync
-        uses: solvaholic/octodns-sync@issue51
+        uses: solvaholic/octodns-sync@issue57
         with:
           config_path: test-config.yaml
-          add_pr_comment: 'Yes'
+          add_pr_comment: 'No'
+          pr_comment_token: '${{ github.token }}'
+      - name: Run octodns-sync again
+        uses: solvaholic/octodns-sync@issue57
+        with:
+          config_path: test-config.yaml
+          add_pr_comment: 'No'
           pr_comment_token: '${{ github.token }}'
