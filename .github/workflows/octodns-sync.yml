@@ -21,9 +21,11 @@ jobs:
           config_path: test-config.yaml
           add_pr_comment: 'No'
           pr_comment_token: '${{ github.token }}'
+          octodns_ref: master
       - name: Run octodns-sync again
         uses: solvaholic/octodns-sync@issue57
         with:
           config_path: test-config.yaml
           add_pr_comment: 'No'
           pr_comment_token: '${{ github.token }}'
+          octodns_ref: master
