@@ -2,6 +2,9 @@
 localhost:
   type: A
   value: 127.0.0.1
+octodns-sync:
+  type: A
+  value: 192.168.0.51
 server:
   type: A
   value: 10.0.0.1
