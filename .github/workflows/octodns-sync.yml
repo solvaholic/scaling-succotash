@@ -12,8 +12,6 @@ jobs:
   publish:
     name: Test DNS config (${{ github.event.action }})
     runs-on: ubuntu-20.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout ${{ github.event.ref }}
         uses: actions/checkout@v2
@@ -21,13 +19,11 @@ jobs:
         uses: solvaholic/octodns-sync@issue57
         with:
           config_path: test-config.yaml
-          add_pr_comment: 'No'
+          add_pr_comment: 'Yes'
           pr_comment_token: '${{ github.token }}'
-          octodns_ref: master
       - name: Run octodns-sync again
         uses: solvaholic/octodns-sync@issue57
         with:
           config_path: test-config.yaml
-          add_pr_comment: 'No'
+          add_pr_comment: 'Yes'
           pr_comment_token: '${{ github.token }}'
-          octodns_ref: master
